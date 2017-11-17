@@ -1,0 +1,8 @@
+.col-4 {
+	outline-style: solid;
+}
+#chat-box {
+	background-color: grey;
+	height: 300px;
+	width: 100%;
+}
