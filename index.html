@@ -30,15 +30,16 @@
 <!-- remove player from game upon page refresh -->
 <!-- when player leaves, notify opponent in chatbox -->
 <div class="container">
-	<div class="row">
+	<div class="jumbotron jumbotron-fluid" class="row">
 		<div id="header">
-			<p id="title">Rock, Paper, Scissors Rivalry</p>
+			<h1 id="title">Rock, Paper, Scissors</h1>
+			<h2>Dual</h2>
 		</div>
 	</div>
 
 
 	<div id="game">
-		<form>
+		<form id="name-input">
 			<input id="player-name" type="text" name="Name" placeholder="Name">
 			<button id="start-button" type="button">Start</button>
 		</form>
@@ -46,24 +47,25 @@
 	</div>
 	<div class="row">
 		<div class="col-4">
-			<p>Waiting for Player 1</p>
+			<h5>Waiting for Player 1</h5>
 		</div>
 		<div class="col-4">
 			
 		</div>
 		<div class="col-4">
-			<p>Waiting for Player 2</p>
+			<h5>Waiting for Player 2</h5>
 		</div>
 	</div>
 
 <div class="container">
 	<div class="row" id="chat-section">
 		<div id="chat-box"></div>
-		<form>
-			<input type="text" name="Chat Box">
-			<button type="button">Send</button>
+		<form id="chat-form">
+			<input id="chat-input" type="text" name="Chat Box">
+			<button id="chat-button" type="button">Send</button>
 		</form>
 	</div>	
+</div>
 </div>	
 
 

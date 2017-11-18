@@ -1,8 +1,42 @@
+.container {
+	margin-left: 100px;
+	margin-right: 100px;
+	align-content: center;
+}
+
 .col-4 {
 	outline-style: solid;
+	outline-width: 1px;
+	margin-bottom: 40px; 
+	height: 150px;
 }
 #chat-box {
 	background-color: grey;
 	height: 300px;
 	width: 100%;
 }
+h1, h2, h5 {
+	text-align: center;
+	padding-top: 5px;
+}
+#name-input {
+	text-align: center;
+	margin-bottom: 40px;
+
+}
+p {
+	text-align: center;
+}
+
+#chat-input {
+	width: 630px;
+
+	
+}
+#chat-section {
+	justify-content: center;
+	margin-bottom: 100px;
+	margin-top: 7px;
+}
+
+

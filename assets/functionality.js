@@ -16,12 +16,12 @@ var player = {
   name: "",
   number: ""
 };
-
+var playerArray = [];
 
   
-firebase.database().ref().on("value", function(snapshot){
-  console.log(snapshot.val());
-});   
+// firebase.database().ref().on("value", function(snapshot){
+//   console.log("snapshot.val()" + snapshot.val());
+// });   
 
 //=======Start game (add name) click function ==========================
 
@@ -34,20 +34,26 @@ firebase.database().ref().on("value", function(snapshot){
       console.log(playerName);
 
   //push player name into the player array;
-    var playerArray = [];
+    
       playerArray.push(playerName);
       console.log(playerArray);
 
 
   //===update player object w inputted player name/index ===================
 
-    var index = $(playerName).index();
+    // var index = playerArray.indexof();
 
-     player['name'] = playerName;  
-     player['number'] = index;
+     player['name'] = playerName; 
+
+     // player['number'] = index;
     console.log(player);
 
-    // firebase.database().ref().set(); 
+    firebase.database().ref().set({
+      Players:playerName
+
+
+    });
+
 
 
   });
