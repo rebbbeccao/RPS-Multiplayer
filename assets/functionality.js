@@ -1,61 +1,80 @@
-$(document).ready(function(){
-    var config = {
-    apiKey: "AIzaSyCuhkTPfcloQ_ou6IpkUzI21JoQNvTgQRU",
-    authDomain: "rps-multiplayer-7c646.firebaseapp.com",
-    databaseURL: "https://rps-multiplayer-7c646.firebaseio.com",
-    projectId: "rps-multiplayer-7c646",
-    storageBucket: "rps-multiplayer-7c646.appspot.com",
-    messagingSenderId: "643186278795"
-    };
-    firebase.initializeApp(config);
+var config = {
+  apiKey: 'AIzaSyCqfjPVbP9lwNmQExbDoAL9IGBTLIFMO3g',
+  authDomain: 'rock-paper-scissors-f18ce.firebaseapp.com',
+  databaseURL: 'https://rock-paper-scissors-f18ce.firebaseio.com',
+  projectId: 'rock-paper-scissors-f18ce',
+  storageBucket: 'rock-paper-scissors-f18ce.appspot.com',
+  messagingSenderId: '1026016375905'
+};
+firebase.initializeApp(config);
 
 //========Global Variables =============================================
 
-var Players = "";
-var player = {
-  name: "",
-  number: ""
-};
-var playerArray = [];
+var database = firebase.database();
+var chatData = database.ref('/chat');
+var playersRef = database.ref('players');
+var currentTurnRef = database.ref('turn');
+var username = 'Guest';
+var currentPlayers = null;
+var currentTurn = null;
+var playerNum = false;
+var playerOneExists = false;
+var playerTwoExists = false;
+var playerOneData = null;
+var playerTwoData = null;
 
-  
 // firebase.database().ref().on("value", function(snapshot){
 //   console.log("snapshot.val()" + snapshot.val());
-// });   
+// });
 
-//=======Start game (add name) click function ==========================
+//=======Start game (username listeners) click function ==========================
 
-  $('#start-button').click(function() {
-      console.log("click");
+$('#start-button').click(function() {
+  if ($('#player-name').val() !== '') {
+    username = capitalize($('#player-name').val());
+    gamePrep();
+  }
+});
 
-  //===========capture player name input =============================
+//=======Start game (username listeners) enter keypress function ==========================
+$('#player-name').keypress(function(event) {
+  if (event.keycode == 13 && $('#player-name').val() !== '') {
+    username = capitalize($('#player-name').val());
+    gamePrep();
+  }
+});
 
-    var playerName = document.getElementById("player-name").value;
-      console.log(playerName);
+// Function to capitalize usernames
+function capitalize(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
 
-  //push player name into the player array;
-    
-      playerArray.push(playerName);
-      console.log(playerArray);
-
-
-  //===update player object w inputted player name/index ===================
-
-    // var index = playerArray.indexof();
-
-     player['name'] = playerName; 
-
-     // player['number'] = index;
-    console.log(player);
-
-    firebase.database().ref().set({
-      Players:playerName
-
-
+// Chat send button listener, grabs input and pushes to firebase. (Firebase's push automatically creates a unique key)
+$('#chat-button').on('click', function() {
+  if ($('#chat-input').val() !== '') {
+    var message = $('#chat-input').val();
+    chatData.push({
+      name: username,
+      message: message,
+      time: firebase.database.ServerValue.TIMESTAMP,
+      idNum: playerNum
     });
 
+    $('#chat-input').val('');
+  }
+});
 
+// Chatbox input enter keypress listener
+$('#chat-button').keypress(function(event) {
+  if (event.keycode == 13 && $('#chat-button') !== '') {
+    var message = $('#chat-input').val();
+    chatData.push({
+      name: username,
+      message: message,
+      time: firebase.database.ServerValue.TIMESTAMP,
+      idNum: playerNum
+    });
 
-  });
-
+    $('#chat-input').val('');
+  }
 });

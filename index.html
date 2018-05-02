@@ -1,74 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Rock, Paper, Scissors Multi-player!</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="assets/style.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-	<script   src="https://code.jquery.com/jquery-3.2.1.min.js"   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="   crossorigin="anonymous"></script>
-	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+	 crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	 crossorigin="anonymous"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
 	<script type="text/javascript" src="assets/functionality.js"></script>
-	
+
 
 </head>
 
 <body>
-<!-- I need two users to log in to the game & populate their name  -->
-<!-- highlight player up div -->
-<!-- then I need the player 1 to click either rock, paper, or scissors -->
-<!-- capture choice -->
-<!-- send stats to firebase -->
-<!-- have player 2 make their choice -->
-<!-- capture choice  -->
-<!-- & send stats to firebase -->
-<!-- compare player choices -->
-<!-- set win, lose, tie conditions -->
-<!-- display score to players -->
-<!-- send score to firebase -->
-<!-- add chat box between players -->
-<!-- remove player from game upon page refresh -->
-<!-- when player leaves, notify opponent in chatbox -->
-<div class="container">
-	<div class="jumbotron jumbotron-fluid" class="row">
-		<div id="header">
-			<h1 id="title">Rock, Paper, Scissors</h1>
-			<h2>Dual</h2>
+	<!-- I need two users to log in to the game & populate their name  -->
+	<!-- highlight player up div -->
+	<!-- then I need the player 1 to click either rock, paper, or scissors -->
+	<!-- capture choice -->
+	<!-- send stats to firebase -->
+	<!-- have player 2 make their choice -->
+	<!-- capture choice  -->
+	<!-- & send stats to firebase -->
+	<!-- compare player choices -->
+	<!-- set win, lose, tie conditions -->
+	<!-- display score to players -->
+	<!-- send score to firebase -->
+	<!-- add chat box between players -->
+	<!-- remove player from game upon page refresh -->
+	<!-- when player leaves, notify opponent in chatbox -->
+	<div class="container">
+		<div class="jumbotron jumbotron-fluid" class="row">
+			<div id="header">
+				<h1 id="title">Rock, Paper, Scissors</h1>
+				<h2>Dual</h2>
+			</div>
+		</div>
+
+
+		<div id="game">
+			<form id="name-input">
+				<input id="player-name" type="text" name="Name" placeholder="Name">
+				<button id="start-button" type="button">Start</button>
+			</form>
+
+		</div>
+		<div class="row">
+			<div class="col-4">
+				<h5>Waiting for Player 1</h5>
+			</div>
+			<div class="col-4">
+
+			</div>
+			<div class="col-4">
+				<h5>Waiting for Player 2</h5>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row" id="chat-section">
+				<div id="chat-box"></div>
+				<form id="chat-form">
+					<input id="chat-input" type="text" name="Chat Box">
+					<button id="chat-button" type="button">Send</button>
+				</form>
+			</div>
 		</div>
 	</div>
-
-
-	<div id="game">
-		<form id="name-input">
-			<input id="player-name" type="text" name="Name" placeholder="Name">
-			<button id="start-button" type="button">Start</button>
-		</form>
-
-	</div>
-	<div class="row">
-		<div class="col-4">
-			<h5>Waiting for Player 1</h5>
-		</div>
-		<div class="col-4">
-			
-		</div>
-		<div class="col-4">
-			<h5>Waiting for Player 2</h5>
-		</div>
-	</div>
-
-<div class="container">
-	<div class="row" id="chat-section">
-		<div id="chat-box"></div>
-		<form id="chat-form">
-			<input id="chat-input" type="text" name="Chat Box">
-			<button id="chat-button" type="button">Send</button>
-		</form>
-	</div>	
-</div>
-</div>	
 
 
 
 </body>
+
 </html>
