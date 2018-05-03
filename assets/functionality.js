@@ -133,7 +133,7 @@ chatData.orderByChild('time').on('child_added', function(snapshot) {
 });
 
 // Tracks changes in key which contains player objects
-playerRef.on('value', function(snapshot) {
+playersRef.on('value', function(snapshot) {
   // length of the 'players' array
   currentPlayers = snapshot.numChildren();
 
@@ -300,3 +300,56 @@ function gameprep() {
 
 // Game logic - Tried to space this out and make it more readable. Displays who won, lost, or tie game in result div.
 // Increments wins or losses accordingly.
+function gameLogic(playerOneChoice, playerTwoChoice) {
+  var playerOneWon = function() {
+    $('#result').html('<h2>' + playerOneData.name + '</h2><h2>Wins!</h2>');
+    if (playerNum === 1) {
+      playersRef
+        .child('1')
+        .child('wins')
+        .set(playerOneData.wins + 1);
+      playersRef
+        .child('2')
+        .child('losses')
+        .set(playerTwoData.losses + 1);
+    }
+  };
+  var playerTwoWon = function() {
+    $('#result').html('<h2>' + playerTwoData.name + '</h2><h2> Wins!!</h2>');
+
+    if (playerNum === 2) {
+      playersRef
+        .child('1')
+        .child('wins')
+        .set(playerTwoData.wins + 1);
+      playersRef
+        .child('2')
+        .child('losses')
+        .set(playerOneData.losses + 1);
+    }
+  };
+
+  var tie = function() {
+    $('#result').html('<h2>Tie Game!</h2>');
+  };
+
+  if (player1choice === 'Rock' && player2choice === 'Rock') {
+    tie();
+  } else if (player1choice === 'Paper' && player2choice === 'Paper') {
+    tie();
+  } else if (player1choice === 'Scissors' && player2choice === 'Scissors') {
+    tie();
+  } else if (player1choice === 'Rock' && player2choice === 'Paper') {
+    playerTwoWon();
+  } else if (player1choice === 'Rock' && player2choice === 'Scissors') {
+    playerOneWon();
+  } else if (player1choice === 'Paper' && player2choice === 'Rock') {
+    playerOneWon();
+  } else if (player1choice === 'Paper' && player2choice === 'Scissors') {
+    playerTwoWon();
+  } else if (player1choice === 'Scissors' && player2choice === 'Rock') {
+    playerTwoWon();
+  } else if (player1choice === 'Scissors' && player2choice === 'Paper') {
+    playerOneWon();
+  }
+}
