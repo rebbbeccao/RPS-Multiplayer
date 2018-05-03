@@ -78,3 +78,225 @@ $('#chat-button').keypress(function(event) {
     $('#chat-input').val('');
   }
 });
+
+// Click event for dynamically added <li> elements in ChatBox
+$(document).on('click', 'li', function() {
+  // Grabs text from li choice
+  var clickChoice = $(this).text();
+  console.log(playersRef);
+
+  // Sets the choice in the current player object in firebase
+  playersRef.child('choice').set(clickChoice);
+
+  // User has chosen, so removes choices and displays what they chose
+  $('#player' + playerNum + 'ul').empty();
+  $('#player' + playerNum + 'chosen').text(clickChoice);
+
+  // Increments turn. Turn goes from:
+  // 1 - player 1
+  // 2 - player 2
+  // 3 - determine winner
+  currentTurnRef.transaction(function(turn) {
+    return turn + 1;
+  });
+});
+
+// Update chat on screen when new message detected - ordered by 'time' value
+chatData.orderByChild('time').on('child_added', function(snapshot) {
+  // If idNum is 0, then its a disconnect message and displays accordingly
+  // If not - its a user chat message
+  if (snapshot.val().idNum === 0) {
+    $('#chat-box').append(
+      '<p class="player' +
+        snapshot.val().idNum +
+        '"><span>' +
+        snapshpt.val().name +
+        '</span>: ' +
+        snapshot.val().message +
+        '</p>'
+    );
+  } else {
+    $('#chat-box').append(
+      '<p class="player' +
+        snapshot.val().idNum +
+        '"><span>' +
+        snapshot.val().name +
+        '</span>: ' +
+        snapshot.val().message +
+        '</p>'
+    );
+  }
+
+  // Keeps div scrolled to bottom on each update.
+
+  $('#chat-section').scrollTop($('#chat-box')[0].scrollHeight);
+});
+
+// Tracks changes in key which contains player objects
+playerRef.on('value', function(snapshot) {
+  // length of the 'players' array
+  currentPlayers = snapshot.numChildren();
+
+  //Check to see if player exists
+  playerOneExists = snapshot.child('1').exists();
+  playerTwoExists = snapshot.child('2').exists();
+
+  // If theres a player 1, fill in name and win loss data
+  if (playerOneExists) {
+    $('#player1-name').text(playerOneData.name);
+    $('#player1-wins').empty();
+    $('#player1-losses').empty();
+  } else {
+    // If there is no player 1, clear win/loss data and show waiting
+    $('#player1-name').text('Waiting for Player 1');
+    $('#player1-wins').empty();
+    $('#player1-losses').empty();
+  }
+
+  // If theres a player 2, fill in name and win loss data
+  if (playerTwoExists) {
+    $('#player2-name').text(playerTwoData.name);
+    $('#player2-wins').empty();
+    $('#player2-losses').empty();
+  } else {
+    // If there is no player 2, clear win/loss data and show waiting
+    $('#player2-name').text('Waiting for Player 2');
+    $('#player2-wins').empty();
+    $('#player2-losses').empty();
+  }
+});
+
+//Detects changes in current turn key
+currentTurnRef.on('value', function(snapshot) {
+  // Gets current turn from snapshot
+  currentTurn = snapshot.val();
+
+  //Don't do the following unless you're logged in
+  if (playerNum) {
+    // For turn 1
+    if (currentTurn === 1) {
+      // If its the current player's turn, tell them and show choices
+      if (currentTurn === playerNum) {
+        $('#current-turn').html("<h2>It's your turn!</h2>");
+        $('#player' + playerNum + 'ul').html(
+          '<li>Rock</li><li>Paper</li><li>Scissors</li>'
+        );
+      } else {
+        // If it isnt the current players turn, tells them theyre waiting for player one
+        $('#current-turn').html(
+          '<h2>Waiting on ' + playerOneData.name + ' to choose.</h2>'
+        );
+      }
+      // Shows yellow border around active player
+      $('#player1').css('border', '2px solid yellow');
+      $('#player2').css('border', '1px solid black');
+    } else if (currentTurn === 2) {
+      // If its the current player's turn, tell them and show choices
+      if (currentTurn === playerNum) {
+        $('#current-turn').html("<h2>It's your turn!</h2>");
+        $('#player' + playerNum + 'ul').html(
+          '<li>Rock</li><li>Paper</li><li>Scissors</li>'
+        );
+      } else {
+        // If it isnt the current players turn, tells them theyre waiting for player one
+        $('#current-turn').html(
+          '<h2>Waiting on ' + playerTwoData.name + ' to choose.</h2>'
+        );
+      }
+      // Shows yellow border around active player
+      $('#player1').css('border', '2px solid yellow');
+      $('#player2').css('border', '1px solid black');
+    } else if (currentTurn === 3) {
+      // Where the game win logic takes place then resets to turn 1
+      gameLogic(playerOneData.choice, playerTwoData.choice);
+
+      // reveal both player choices
+      $('#player1-chosen').text(playerOneData.choice);
+      $('#player2-chosen').text(playerTwoData.choice);
+
+      //  reset after timeout
+      var moveOn = function() {
+        $('#player1-chosen').empty();
+        $('#player2-chosen').empty();
+        $('#result').empty();
+
+        // check to make sure players didn't leave before timeout
+        if (playerOneExists && playerTwoExists) {
+          currentTurnRef.set(1);
+        }
+      };
+
+      //  show results for 2 seconds, then resets
+      setTimeout(moveOn, 2000);
+    } else {
+      $('#player1 ul').empty();
+      $('#player2 ul').empty();
+      $('#current-turn').html('<h2>Waiting for another player to join.</h2>');
+      $('#player2').css('border', '1px solid black');
+      $('#player1').css('border', '1px solid black');
+    }
+  }
+});
+
+// When a player joins, checks to see if there are two players now. If yes, then it will start the game.
+playersRef.on('child_added', function(snapshot) {
+  if (currentPlayers === 1) {
+    // set turn to 1, which starts the game
+    currentTurnRef.set(1);
+  }
+});
+
+// Function to get in the game
+function gameprep() {
+  // For adding disconnects to the chat with a unique id (the date/time the user entered the game)
+  // Needed because Firebase's '.push()' creates its unique keys client side,
+  // so you can't ".push()" in a ".onDisconnect"
+  var chatDataDisc = database.ref('/chat/' + Date.now());
+
+  // Checks for current players, if theres a player one connected, then the user becomes player 2.
+  // If there is no player one, then the user becomes player 1
+
+  if (currentPlayers < 2) {
+    if (playerOneExists) {
+      playerNum = 2;
+    } else {
+      playerNum = 1;
+    }
+
+    // Creates key based on assigned player number
+    playerRef = database.ref('/players/' + playerNum);
+
+    // Creates player object. 'choice' is unnecessary here, but I left it in to be as complete as possible
+    playerRef.set({
+      name: username,
+      wins: 0,
+      losses: 0,
+      choice: null
+    });
+
+    // On disconnect remove this user's player object
+    playerRef.onDisconnect().remove();
+
+    // If a user disconnects, set the current turn to 'null' so the game does not continue
+    currentTurnRef.onDisconnect.remove();
+
+    // Send disconnect message to chat with Firebase server generated timestamp and id of '0' to denote system message
+
+    chatDataDisc.onDisconnect.set({
+      name: username,
+      message: 'has disconnected.',
+      time: firebase.database.ServerValue.TIMESTAMP,
+      idNum: 0
+    });
+    // Remove name input box and show current player number.
+    $('#swap-zone').html(
+      '<h2>Hi ' + username + '! You are Player ' + playerNum + '</h2>'
+    );
+  } else {
+    // If current players is "2", will not allow the player to join
+    alert('Sorry, Game Full! Try Again Later!');
+  }
+}
+
+// Game logic - Tried to space this out and make it more readable. Displays who won, lost, or tie game in result div.
+// Increments wins or losses accordingly.
